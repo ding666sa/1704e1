@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.dingsa.mapper.FlowerMapper">
+	<resultMap type="Flower" id="rm">
+		<id column="fid" property="fid"/>
+		<result column="fname" property="fname"/>
+		<result column="introduction" property="introduction"/>
+		<association property="type" javaType="Type">
+			<id column="tid" property="tid"/>
+			<result column="tname" property="tname"/>
+		</association>
+	</resultMap>
+	
+	<select id="selectAll" parameterType="FlowerVo" resultMap="rm">
+		select f.* from w_flower f join w_type t on f.tid=t.tid where 1=1
+		<if test="fname!=null and fname!=''">
+			and fname like "%${fname}%"
+		</if>
+	</select>
+	
+	<insert id="insertFlower" parameterType="Flower">
+		insert into w_flower(fname,introduction,tid) values(#{fname},#{introduction},#{type.tid})
+	</insert>
+	
+	<delete id="deleteById" parameterType="int">
+		delete from w_flower where fid=#{fid}
+	</delete>
+	
+	<select id="selectById" parameterType="int" resultType="Flower">
+		select f.* from w_flower f join w_type t on f.tid=t.tid where f.fid=#{fid} 
+	</select>
+	
+	<delete id="deleteByIds" parameterType="int">
+		delete from w_flower where fid in( #{ids} )
+	</delete>
+	
+	<update id="updateFlower" parameterType="Flower">
+		update w_flower set fname=#{fname},introduction=#{introduction} where fid=#{fid}
+	</update>
+</mapper>
